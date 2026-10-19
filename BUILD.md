@@ -98,9 +98,13 @@ AUDIO=0 ./build.sh            # diagnostic: no audio
 GAMEPAD=0 ./build.sh          # diagnostic: no gamepad
 DEBUG_CONSOLE=1 ./build.sh    # UART logging + HID 0xB4 log readout
 MIC_DIAG=1 ./build.sh         # mic diagnostics (changes audio timing)
-BOARD_TYPE=aim61 ./build.sh   # Ai-M61-32S-Kit
-BOARD_TYPE=m0sdock ./build.sh # Sipeed M0S Dock
+BOARD_TYPE=aim61 ./build.sh   # Ai-M61-32S-Kit (inherited target, untested here)
+BOARD_TYPE=m0sdock ./build.sh # Sipeed M0S Dock (inherited target, untested here)
 ```
+
+> Only **LCTech BL616** has been hardware-validated in this fork. The `aim61` and `m0sdock`
+> configurations are carried over from the upstream base; they are expected to build, but USB
+> wiring, LED behaviour and audio timing have not been verified here.
 
 Other actions:
 

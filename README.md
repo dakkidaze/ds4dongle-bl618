@@ -15,14 +15,17 @@ external SDK checkout.
 
 ## Supported Boards
 
-| Board | Chip | USB | LED | Debug |
-|-------|------|-----|-----|-------|
-| **LCTech BL616** (default) | BL616 QFN32 | Type-C native | 1x blue (GPIO27) | External USB-TTL |
-| **Ai-M61-32S-Kit** | BL618 QFN56 | GPIO37/38 fly-wire | RGB + white (4 LED) | Type-C CH340 |
-| **Sipeed M0S Dock** | BL616 QFN32 | Type-C native | 2x red (GPIO27/28) | External USB-TTL |
+| Board | Chip | USB | LED | Debug | Status |
+|-------|------|-----|-----|-------|--------|
+| **LCTech BL616** (default) | BL616 QFN32 | Type-C native | 1x blue (GPIO27) | External USB-TTL | **Hardware-validated in this fork** |
+| **Ai-M61-32S-Kit** | BL618 QFN56 | GPIO37/38 fly-wire | RGB + white (4 LED) | Type-C CH340 | Build target only (inherited, untested here) |
+| **Sipeed M0S Dock** | BL616 QFN32 | Type-C native | 2x red (GPIO27/28) | External USB-TTL | Build target only (inherited, untested here) |
 
-The default build target is LCTech BL616. Use `BOARD_TYPE=aim61` or `BOARD_TYPE=m0sdock` for the
-other boards. LED pins and USB topology are selected at compile time in `board_config.h`.
+**Only the LCTech BL616 has been validated on hardware in this fork.** The other two board
+configurations are carried over from the upstream base and are provided as-is: they are expected
+to build, but USB wiring, LED behaviour and audio timing have **not** been verified here. Use
+`BOARD_TYPE=aim61` or `BOARD_TYPE=m0sdock` at your own risk, and report results if you test them.
+LED pins and USB topology are selected at compile time in `board_config.h`.
 
 ## Features
 
