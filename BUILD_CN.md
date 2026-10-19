@@ -95,12 +95,12 @@ AUDIO=0 ./build.sh            # 诊断：无音频
 GAMEPAD=0 ./build.sh          # 诊断：无手柄
 DEBUG_CONSOLE=1 ./build.sh    # UART 日志 + HID 0xB4 日志读取
 MIC_DIAG=1 ./build.sh         # mic 诊断行为（会改变音频节拍）
-BOARD_TYPE=aim61 ./build.sh   # Ai-M61-32S-Kit（继承配置，未验证）
-BOARD_TYPE=m0sdock ./build.sh # Sipeed M0S Dock（继承配置，未验证）
+BOARD_TYPE=aim61 ./build.sh   # Ai-M61-32S-Kit（构建已验证，硬件未测）
+BOARD_TYPE=m0sdock ./build.sh # Sipeed M0S Dock（构建已验证，硬件未测）
 ```
 
-> 本仓库只有 **LCTech BL616** 做过硬件验收。`aim61` / `m0sdock` 的配置继承自上游基座，
-> 预期能编译，但 USB 接线、LED 与音频时序没有在本仓库验证。
+> 本仓库只有 **LCTech BL616** 做过硬件验收。三种配置都能构建，但 `aim61` / `m0sdock` 的
+> USB 接线、LED 与音频时序没有在真实硬件上验证。
 
 其他动作：
 

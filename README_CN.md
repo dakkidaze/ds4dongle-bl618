@@ -16,14 +16,13 @@ dongle 通过 USB 呈现为**标准有线 DS4 v2**（VID `054C` / PID `09CC`）�
 
 | 开发板 | 芯片 | USB | LED | 调试 | 状态 |
 |---|---|---|---|---|---|
-| **LCTech BL616**（默认） | BL616 QFN32 | Type-C 原生 | 蓝色 x1（GPIO27） | 外接 USB-TTL | **本仓库已做硬件验收** |
-| **Ai-M61-32S-Kit** | BL618 QFN56 | GPIO37/38 飞线 | RGB + 白（4 灯） | Type-C CH340 | 仅构建配置（继承自上游，未验证） |
-| **Sipeed M0S Dock** | BL616 QFN32 | Type-C 原生 | 红色 x2（GPIO27/28） | 外接 USB-TTL | 仅构建配置（继承自上游，未验证） |
+| **LCTech BL616**（默认） | BL616 QFN32 | Type-C 原生 | 蓝色 x1（GPIO27） | 外接 USB-TTL | **已做硬件验收** |
+| **Ai-M61-32S-Kit** | BL618 QFN56 | GPIO37/38 飞线 | RGB + 白（4 灯） | Type-C CH340 | 构建已验证，硬件未测 |
+| **Sipeed M0S Dock** | BL616 QFN32 | Type-C 原生 | 红色 x2（GPIO27/28） | 外接 USB-TTL | 构建已验证，硬件未测 |
 
-**本仓库只有 LCTech BL616 在真实硬件上验收过。** 另外两块板的配置是从上游基座继承的，按原样提供：
-预期能编译，但 USB 接线、LED 行为和音频时序**没有在本仓库验证**。使用
-`BOARD_TYPE=aim61` / `BOARD_TYPE=m0sdock` 风险自负；如果测了欢迎反馈结果。
-LED 引脚与 USB 拓扑在 `board_config.h` 里按板型编译选择。
+**本仓库只有 LCTech BL616 在真实硬件上验收过。** 三种配置都能构建（本地已验证），但
+`aim61` / `m0sdock` 的 USB 接线、LED 行为和音频时序**没有在真实硬件上验证**。使用风险自负；
+如果测了欢迎反馈结果。LED 引脚与 USB 拓扑在 `board_config.h` 里按板型编译选择。
 
 ## 功能
 
