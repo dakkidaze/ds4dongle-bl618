@@ -309,14 +309,19 @@ case "$ACTION" in
         ;;
     flash)
         COMX="${2:-/dev/tty.usbserial*}"
-        FLASH_TOOL="${BL_SDK_BASE}/tools/bflb_tools/bouffalo_flash_cube/BLFlashCommand-ubuntu"
+        FLASH_TOOL="${BL_FLASH_PROGRAM:-${BL_SDK_BASE}/tools/bflb_tools/bouffalo_flash_cube/BLFlashCommand-ubuntu}"
         if [[ ! -x "${FLASH_TOOL}" ]]; then
             echo "ERROR: BLFlashCommand is not vendored in this repository." >&2
             echo "       Flash with Bouffalo Dev Cube, or copy the tool from the full SDK:" >&2
             echo "       ${FLASH_TOOL}" >&2
             exit 1
         fi
-        ${MAKE_CMD} CMAKE=cmake flash COMX="$COMX"
+        if [[ ! -f "${OUT_DIR}/flash_prog_cfg.ini" ]]; then
+            echo "ERROR: ${OUT_DIR}/flash_prog_cfg.ini not found; run ./build.sh first." >&2
+            exit 1
+        fi
+        ( cd "${OUT_DIR}" && "${FLASH_TOOL}" --interface=uart --baudrate=2000000 \
+            --port="${COMX}" --chipname=bl616 --cpu_id= --config=flash_prog_cfg.ini )
         ;;
     rebuild)
         ${MAKE_CMD} CMAKE=cmake clean
