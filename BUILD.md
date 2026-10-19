@@ -125,6 +125,9 @@ Other actions:
 
 ### 1.6 Flashing (Linux)
 
+> Full guide: **[FLASHING.md](FLASHING.md)** — release bundle vs local build, what the `.ini`
+> files do, Windows/macOS paths, and troubleshooting.
+
 1. Put the board into **ISP mode** (unplug, hold BOOT, plug in).
 2. Find the serial port:
    ```bash
@@ -140,6 +143,7 @@ Other actions:
          third_party/bouffalo_sdk/tools/bflb_tools/bouffalo_flash_cube/
    ./build.sh flash /dev/ttyACM0
    ```
+   The script passes `firmware/lctech616/flash_prog_cfg.ini` to the tool automatically.
 5. Serial permissions (Linux only):
    ```bash
    sudo usermod -aG dialout $USER   # log out/in afterwards
@@ -161,8 +165,9 @@ wsl --install -d Ubuntu
 
 Then install the packages, clone and run `./build.sh` inside Ubuntu.
 
-**Flashing**: copy `firmware/lctech616/` to Windows and use **Bouffalo Dev Cube**, or attach the
-USB device to WSL with `usbipd-win`:
+**Flashing**: see **[FLASHING.md](FLASHING.md)** for the release bundle and Windows paths.
+For a local build, copy `firmware/lctech616/` to Windows and use **Bouffalo Dev Cube**, or attach
+the USB device to WSL with `usbipd-win`:
 
 ```powershell
 winget install usbipd

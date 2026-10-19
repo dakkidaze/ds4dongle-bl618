@@ -131,6 +131,17 @@ Each variant ships with its own flash configuration:
   flash_prog_cfg-speaker.ini
 boot2_*.bin and partition.bin are identical for all variants.
 
+What the .ini does
+------------------
+The .ini is a flash layout manifest, not firmware. It tells the flashing tool:
+  boot2     -> 0x000000
+  partition -> 0xE000
+  app       -> @partition (resolved from partition.bin; 0x10000 on this layout)
+Keep the files together: the ini uses relative paths. If you rename a bin,
+edit the matching [FW] filedir line.
+
+Full guide: https://github.com/dakkidaze/ds4dongle-bl618/blob/main/FLASHING.md
+
 Flashing with Bouffalo Dev Cube
 -------------------------------
 1. Put the board into ISP mode: unplug it, hold BOOT, plug it back in.

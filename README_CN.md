@@ -1,6 +1,6 @@
 # DS4Dongle BL618
 
-[English](README.md) · [编译教程](BUILD_CN.md)
+[English](README.md) · [编译教程](BUILD_CN.md) · [刷固件教程](FLASHING_CN.md)
 
 基于 BL616/BL618 的 **DualShock 4（CUH-ZCT2）** 无线适配器：手柄走蓝牙经典（BR/EDR）HID，
 dongle 通过 USB 呈现为**标准有线 DS4 v2**（VID `054C` / PID `09CC`），并带 UAC1 音频。
@@ -82,12 +82,17 @@ Windows（WSL2 或原生 MSYS2）、离线工具链、构建选项、烧录与�
 
 ## 烧录
 
-板子进 ISP 模式（拔下 → 按住 BOOT → 插上），然后任选：
+板子进 ISP 模式（拔下 → 按住 BOOT → 插上）。完整教程（ini 的作用、Linux/Windows/macOS
+三种路径、常见问题）见 **[FLASHING_CN.md](FLASHING_CN.md)**。
 
-- 用 **Bouffalo Dev Cube** 加载 `firmware/<board>/flash_prog_cfg.ini`；或
-- 从完整 Bouffalo SDK 拷贝 `BLFlashCommand` 到
-  `third_party/bouffalo_sdk/tools/bflb_tools/bouffalo_flash_cube/`，执行
-  `./build.sh flash /dev/ttyACM0`。
+快速版：
+
+- **Bouffalo Dev Cube**：加载 `release/flash_prog_cfg-<variant>.ini`（发布包）或
+  `firmware/<board>/flash_prog_cfg.ini`（本地编译）。
+- **Linux 命令行**：从完整 SDK 拷贝 `BLFlashCommand` 到
+  `third_party/bouffalo_sdk/tools/bflb_tools/bouffalo_flash_cube/`，然后执行
+  `./build.sh flash /dev/ttyACM0`。脚本会自动把 `firmware/<board>/flash_prog_cfg.ini`
+  传给工具。
 
 ## 调试日志（0xB4）
 

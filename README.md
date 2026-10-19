@@ -1,6 +1,6 @@
 # DS4Dongle BL618
 
-[中文文档 (Chinese)](README_CN.md) · [Build guide](BUILD.md)
+[中文文档 (Chinese)](README_CN.md) · [Build guide](BUILD.md) · [Flashing guide](FLASHING.md)
 
 A wireless **DualShock 4 (CUH-ZCT2)** adapter based on BL616/BL618. It bridges a DS4 over
 Bluetooth Classic (BR/EDR) HID to a host PC via USB, appearing as a **standard wired DS4 v2**
@@ -88,12 +88,17 @@ options, flashing and troubleshooting.
 
 ## Flashing
 
-Put the board into ISP mode (unplug, hold BOOT, plug in), then either:
+Put the board into ISP mode (unplug, hold BOOT, plug in). The full guide — what the `.ini` files
+do, the Linux/Windows/macOS paths, and troubleshooting — is in **[FLASHING.md](FLASHING.md)**.
 
-- use **Bouffalo Dev Cube** with `firmware/<board>/flash_prog_cfg.ini`; or
-- copy `BLFlashCommand` from the full Bouffalo SDK into
-  `third_party/bouffalo_sdk/tools/bflb_tools/bouffalo_flash_cube/` and run
-  `./build.sh flash /dev/ttyACM0`.
+Quick version:
+
+- **Bouffalo Dev Cube**: load `release/flash_prog_cfg-<variant>.ini` (release bundle) or
+  `firmware/<board>/flash_prog_cfg.ini` (local build).
+- **Linux CLI**: copy `BLFlashCommand` from the full SDK into
+  `third_party/bouffalo_sdk/tools/bflb_tools/bouffalo_flash_cube/`, then run
+  `./build.sh flash /dev/ttyACM0`. The script passes `firmware/<board>/flash_prog_cfg.ini`
+  to the tool automatically.
 
 ## Debug log (0xB4)
 

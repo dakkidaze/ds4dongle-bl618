@@ -120,6 +120,9 @@ BOARD_TYPE=m0sdock ./build.sh # Sipeed M0S Dock（构建已验证，硬件未测
 
 ### 1.6 烧录（Linux）
 
+> 完整教程：**[FLASHING_CN.md](FLASHING_CN.md)** —— 发布包与本地编译的区别、ini 的作用、
+> Windows/macOS 路径、常见问题。
+
 1. 让板子进入 **ISP 模式**（拔下 → 按住 BOOT → 插上）。
 2. 确认串口：
    ```bash
@@ -136,6 +139,7 @@ BOARD_TYPE=m0sdock ./build.sh # Sipeed M0S Dock（构建已验证，硬件未测
          third_party/bouffalo_sdk/tools/bflb_tools/bouffalo_flash_cube/
    ./build.sh flash /dev/ttyACM0
    ```
+   脚本会自动把 `firmware/lctech616/flash_prog_cfg.ini` 传给工具。
 5. 串口权限（仅 Linux 需要）：
    ```bash
    sudo usermod -aG dialout $USER   # 重新登录生效
@@ -157,7 +161,8 @@ wsl --install -d Ubuntu
 
 然后在 Ubuntu 里安装依赖、克隆、`./build.sh`。
 
-**烧录**：把 WSL 里的 `firmware/lctech616/` 拷到 Windows，用 **Bouffalo Dev Cube** 烧；
+**烧录**：发布包和 Windows 路径见 **[FLASHING_CN.md](FLASHING_CN.md)**。
+本地编译的话，把 WSL 里的 `firmware/lctech616/` 拷到 Windows，用 **Bouffalo Dev Cube** 烧；
 或者用 `usbipd-win` 把 USB 设备挂进 WSL：
 
 ```powershell
