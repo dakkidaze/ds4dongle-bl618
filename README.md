@@ -15,8 +15,15 @@ The patched Bouffalo SDK is vendored in `third_party/bouffalo_sdk` (Apache-2.0),
 Requirements (Debian / Ubuntu / WSL):
 
 ```bash
-sudo apt install build-essential cmake python3 gcc-riscv64-unknown-elf
+sudo apt install build-essential cmake python3 curl xz-utils
 ```
+
+The SDK compiles with `-march=rv32imafcpzpsfoperand_xtheade`, so it needs the T-Head
+(Xuantie) RISC-V toolchain, which is not available as a distro package. The first
+`./build.sh` downloads the official toolchain (~95 MB) into `third_party/toolchain/`
+(git-ignored); you can also run `./setup_toolchain.sh` explicitly. Set
+`SKIP_TOOLCHAIN_SETUP=1` to disable the automatic download and use `CROSS_COMPILE`
+or a toolchain already in `PATH`.
 
 Clone and build:
 
@@ -107,11 +114,13 @@ BL616/BL618 uses the T-Head extended ISA. A standard `riscv64-elf-gcc` will not 
 curl -L https://github.com/beckmx/bouffalo_labs_mac_toolchain/releases/download/v1.0/riscv64-unknown-elf-toolchain.tar.gz \
   | tar xz -C ~/riscv-toolchain
 
-# Linux (Debian/Ubuntu/WSL) — system package
-sudo apt install build-essential cmake python3 gcc-riscv64-unknown-elf
+# Linux (Debian/Ubuntu/WSL) — Xuantie toolchain, fetched by setup_toolchain.sh
+./setup_toolchain.sh
 ```
 
-`build.sh` uses `riscv64-unknown-elf-gcc` from `PATH` (the apt package above); a local `~/riscv-toolchain/toolchain/bin` is only a fallback.
+`build.sh` first looks for `riscv64-unknown-elf-gcc` in `PATH`, then for the toolchain
+downloaded into `third_party/toolchain/`, then for local developer installs. The
+Xuantie toolchain is required because of the T-Head `-march` extensions.
 
 ### 4. Build
 

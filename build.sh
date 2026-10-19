@@ -111,7 +111,21 @@ find_toolchain() {
         fi
     done
 
-    # 3) Local fallbacks (developer machines only).
+    # 3) Toolchain downloaded by setup_toolchain.sh
+    local vendored
+    for vendored in "${SCRIPT_DIR}"/third_party/toolchain/*/bin; do
+        [[ -d "${vendored}" ]] || continue
+        for prefix in "${prefixes[@]}"; do
+            if [[ -x "${vendored}/${prefix}gcc" ]]; then
+                export PATH="${vendored}:${PATH}"
+                TOOLCHAIN_PREFIX="$prefix"
+                echo "[build] Toolchain (vendored): ${vendored}"
+                return 0
+            fi
+        done
+    done
+
+    # 4) Local fallbacks (developer machines only).
     local search_dirs=(
         "$HOME/riscv-toolchain/toolchain/bin"
         "/opt/riscv-toolchain/bin"
@@ -134,20 +148,25 @@ find_toolchain() {
 }
 
 if ! find_toolchain; then
+    if [[ "${SKIP_TOOLCHAIN_SETUP:-0}" != "1" && -x "${SCRIPT_DIR}/setup_toolchain.sh" ]]; then
+        echo "[build] No RISC-V toolchain found; downloading the official Xuantie toolchain..."
+        "${SCRIPT_DIR}/setup_toolchain.sh" || true
+        find_toolchain || true
+    fi
+fi
+
+if [[ -z "${TOOLCHAIN_PREFIX}" ]]; then
     echo "============================================"
     echo " ERROR: RISC-V toolchain not found"
     echo ""
-    echo " 请通过系统包管理器安装（Debian/Ubuntu）："
-    echo "   sudo apt install build-essential cmake python3 gcc-riscv64-unknown-elf"
+    echo " The SDK needs the T-Head (Xuantie) toolchain because it compiles with"
+    echo " -march=rv32imafcpzpsfoperand_xtheade, which upstream GCC does not support."
     echo ""
-    echo " Fedora:"
-    echo "   sudo dnf install gcc-c++ cmake python3 gcc-riscv64-unknown-elf"
+    echo " Run: ./setup_toolchain.sh"
+    echo "   (downloads the official toolchain into third_party/toolchain/, ~95 MB)"
     echo ""
-    echo " macOS (Homebrew):"
-    echo "   brew install riscv64-elf-gcc cmake"
-    echo ""
-    echo " 或显式指定前缀："
-    echo "   CROSS_COMPILE=/path/to/riscv64-unknown-elf- ./build.sh"
+    echo " System packages still needed:"
+    echo "   sudo apt install build-essential cmake python3 curl xz-utils"
     echo "============================================"
     exit 1
 fi

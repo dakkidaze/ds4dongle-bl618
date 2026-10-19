@@ -65,22 +65,26 @@ sudo apt install cmake make
 
 ### 3. 安装 RISC-V 工具链
 
-BL616/BL618 使用 T-Head 扩展指令集，标准 `riscv64-elf-gcc` 无法使用。
+BL616/BL618 使用 T-Head 扩展指令集（`-march=rv32imafcpzpsfoperand_xtheade`），标准 `riscv64-elf-gcc` 无法编译。
 
 ```bash
-# macOS ARM64 — 社区预编译 T-Head 工具链
-curl -L https://github.com/beckmx/bouffalo_labs_mac_toolchain/releases/download/v1.0/riscv64-unknown-elf-toolchain.tar.gz \
-  | tar xz -C ~/riscv-toolchain
-
-# Linux — SDK 自带工具链，或从 T-Head 官方下载
+# Linux / macOS：下载官方 Xuantie 工具链到 third_party/toolchain/（已 gitignore）
+./setup_toolchain.sh
 ```
 
-`build.sh` 会自动在 `~/riscv-toolchain/toolchain/bin` 下查找工具链。
+系统依赖（Debian/Ubuntu/WSL）：
+
+```bash
+sudo apt install build-essential cmake python3 curl xz-utils
+```
+
+`build.sh` 依次查找：`CROSS_COMPILE` → `PATH` → `third_party/toolchain/` → 本机开发用目录。
+首次 `./build.sh` 会自动调用 `setup_toolchain.sh`；设置 `SKIP_TOOLCHAIN_SETUP=1` 可关闭自动下载。
 
 ### 4. 编译
 
 ```bash
-cd ds5dongle-bl618
+cd ds4dongle-bl618
 
 # LCTech BL616 — 默认
 bash build.sh build      # 增量编译（-j 自动并行）
