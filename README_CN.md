@@ -7,6 +7,7 @@ dongle 通过 USB 呈现为**标准有线 DS4 v2**（VID `054C` / PID `09CC`）�
 游戏把它当作普通 DualShock 4，无需安装驱动。
 
 打补丁的 Bouffalo SDK 已 vendor 在 `third_party/bouffalo_sdk`，克隆后不需要另外下载 SDK。
+裁剪/vendor 的具体做法以及如何复用到其它 app，见 [SDK_VENDORING_CN.md](SDK_VENDORING_CN.md)。
 
 > **非官方项目** —— 与索尼互动娱乐（Sony Interactive Entertainment）无关，亦未获其认可。
 > "DualShock"、"DUALSHOCK" 与 "PlayStation" 是索尼互动娱乐的商标。
@@ -124,6 +125,7 @@ third_party/bouffalo_sdk/  打补丁的 SDK（Apache-2.0）
 tools/                     主机侧工具（日志读取、描述符检查、EP0 测试）
 BUILD.md / BUILD_CN.md     编译教程
 SDK_CHANGES.md             SDK 修改说明
+SDK_VENDORING.md / _CN.md  SDK 裁剪/vendor 方法，以及如何复用到其它 app
 ```
 
 ## 状态

@@ -7,7 +7,8 @@ Bluetooth Classic (BR/EDR) HID to a host PC via USB, appearing as a **standard w
 (VID `054C` / PID `09CC`) with UAC1 audio. Games see an ordinary DualShock 4; no driver is needed.
 
 The patched Bouffalo SDK is vendored in `third_party/bouffalo_sdk`, so a clone builds without an
-external SDK checkout.
+external SDK checkout. See [SDK_VENDORING.md](SDK_VENDORING.md) for how the vendor was pruned and
+how to apply the same procedure to another app.
 
 > **Unofficial project** — not affiliated with or endorsed by Sony Interactive Entertainment.
 > "DualShock", "DUALSHOCK" and "PlayStation" are trademarks of Sony Interactive Entertainment.
@@ -130,6 +131,7 @@ third_party/bouffalo_sdk/  vendored, patched SDK (Apache-2.0)
 tools/                     host-side helpers (log reader, descriptor walker, EP0 tests)
 BUILD.md / BUILD_CN.md     build tutorials
 SDK_CHANGES.md             what changed in the SDK and why
+SDK_VENDORING.md / _CN.md  how the SDK was pruned/vendored and how to reuse the procedure
 ```
 
 ## Status
