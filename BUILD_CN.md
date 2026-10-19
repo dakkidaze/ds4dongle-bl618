@@ -64,7 +64,9 @@ cd ds4dongle-bl618
 产物在：
 
 ```
-firmware/lctech616/ds4dongle-lctech616.bin          # 发布候选（Audio + Gamepad）
+firmware/lctech616/ds4dongle-lctech616.bin          # wired（默认）：Audio + Gamepad
+firmware/lctech616/ds4dongle-lctech616-spk.bin      # speaker（SPEAKER=1）
+firmware/lctech616/ds4dongle-lctech616-noaudio.bin  # 仅手柄（AUDIO=0）
 firmware/lctech616/flash_prog_cfg.ini              # 烧录配置
 firmware/lctech616/boot2_*.bin, partition.bin      # 烧录包
 ```
@@ -90,8 +92,9 @@ SKIP_TOOLCHAIN_SETUP=1 ./build.sh   # 禁止自动下载
 ### 1.5 构建选项
 
 ```bash
-./build.sh                    # 默认：LCTech BL616，Audio + Gamepad
-AUDIO=0 ./build.sh            # 诊断：无音频
+./build.sh                    # 默认：LCTech BL616，wired（Audio + Gamepad）
+SPEAKER=1 ./build.sh          # 自定义：无耳机时走内置扬声器（-spk）
+AUDIO=0 ./build.sh            # 诊断：无音频（-noaudio）
 GAMEPAD=0 ./build.sh          # 诊断：无手柄
 DEBUG_CONSOLE=1 ./build.sh    # UART 日志 + HID 0xB4 日志读取
 MIC_DIAG=1 ./build.sh         # mic 诊断行为（会改变音频节拍）
@@ -99,12 +102,17 @@ BOARD_TYPE=aim61 ./build.sh   # Ai-M61-32S-Kit（构建已验证，硬件未测�
 BOARD_TYPE=m0sdock ./build.sh # Sipeed M0S Dock（构建已验证，硬件未测）
 ```
 
-> 本仓库只有 **LCTech BL616** 做过硬件验收。三种配置都能构建，但 `aim61` / `m0sdock` 的
+> `wired` 是默认变体，与有线 DS4 一致：USB 音频只送到耳机口，不插耳机时内置扬声器保持静音。
+> `SPEAKER=1` 才启用自定义路由——无耳机时把 L+R 下混后送到内置扬声器。它依赖音频功能，
+> 与 `AUDIO=0` 同时使用会被拒绝。
+
+> 本仓库只有 **LCTech BL616** 做过硬件验收。三种板型都能构建，但 `aim61` / `m0sdock` 的
 > USB 接线、LED 与音频时序没有在真实硬件上验证。
 
 其他动作：
 
 ```bash
+./release.sh          # 构建三个变体到 release/（固件 + 烧录配置）
 ./build.sh clean      # 清理
 ./build.sh rebuild    # 清理后重编
 ./build.sh strip      # 只删中间文件，保留固件

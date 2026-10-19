@@ -24,6 +24,20 @@ dongle 通过 USB 呈现为**标准有线 DS4 v2**（VID `054C` / PID `09CC`）�
 `aim61` / `m0sdock` 的 USB 接线、LED 行为和音频时序**没有在真实硬件上验证**。使用风险自负；
 如果测了欢迎反馈结果。LED 引脚与 USB 拓扑在 `board_config.h` 里按板型编译选择。
 
+## 手柄兼容性
+
+dongle 对主机始终呈现为有线 DS4 v2（`054C:09CC`），手柄的硬件版本只影响蓝牙侧。
+
+| 手柄 | 状态 | 说明 |
+|---|---|---|
+| **DualShock 4 v2（CUH-ZCT2）** | **已做硬件验收** | 本固件的基准手柄。 |
+| **DualShock 4 v1（CUH-ZCT1）** | 协议层理论上兼容，**未做硬件实测** | 与 v2 使用同一套蓝牙 HID 报告（`0x11` 状态、`0x12–0x19` 麦克风音频、`0x17` 扬声器音频）。基础输入、震动、灯条预期可用；麦克风音频与体感校准需要实机确认。 |
+| **第三方 / 克隆“DS4”手柄** | **不保证兼容** | 很多克隆产品的报告 ID、payload 长度、feature report 或音频格式不同。基础 HID 输入可能可用，但麦克风、音频与校准不一定。 |
+
+计划提供 `PROBE=1` 诊断构建：在不修改手柄的前提下，抓取手柄的 HID SDP record / report
+descriptor、输入报告 ID 与长度、feature report，以及音频报告是否存在。如果你有 v1 或克隆
+手柄，欢迎带着型号和探针日志开 issue。
+
 ## 功能
 
 - **DS4 v2 USB 形态**：与真机逐字节一致的 507 字节 HID 报告描述符、UAC1 音频、
@@ -51,9 +65,20 @@ cd ds4dongle-bl618
 
 首次编译会下载官方 Xuantie RISC-V 工具链（约 95 MB，SHA-256 校验）到 `third_party/toolchain/`
 （已 gitignore），因为 SDK 使用 T-Head 的 `-march` 扩展。
-产物：`firmware/lctech616/ds4dongle-lctech616.bin`（Audio + Gamepad）。
+产物：`firmware/lctech616/ds4dongle-lctech616.bin` —— 默认的 `wired` 变体（Audio + Gamepad）。
 
 Windows（WSL2 或原生 MSYS2）、离线工具链、构建选项、烧录与排错见 [BUILD_CN.md](BUILD_CN.md)。
+
+## 发布变体
+
+| 变体 | 构建 | 音频行为 |
+|---|---|---|
+| `ds4dongle-bl618-wired` | `./build.sh`（默认） | 与有线 DS4 一致：USB 音频只走耳机口；不插耳机时内置扬声器不发声。 |
+| `ds4dongle-bl618-gamepadonly` | `AUDIO=0 ./build.sh` | 无 UAC1 音频功能，仅手柄。 |
+| `ds4dongle-bl618-speaker` | `SPEAKER=1 ./build.sh` | 不插耳机时立体声按 L+R 下混到内置扬声器；插上耳机仍为立体声。 |
+
+`./release.sh` 会依次构建三个变体，把固件、boot2/partition 以及每个变体各自的
+`flash_prog_cfg-*.ini` 写入 `release/`（已 gitignore）。
 
 ## 烧录
 
@@ -98,9 +123,11 @@ SDK_CHANGES.md             SDK 修改说明
 
 ## 状态
 
-- 软件：P0 音频会话整改完成并通过复审；默认配置可构建发布候选。
+- 软件：P0 音频会话整改完成并通过复审；三个发布变体（`wired`、`gamepadonly`、`speaker`）均已
+  构建验证，`./release.sh` 可产出完整烧录包。
 - 硬件：已在 LCTech BL616 上验收枚举、手柄、扬声器、麦克风、双工、暂停/恢复、拔插与蓝牙重连。
-  仅 Full-Speed。
+  该次验收使用的是旧默认路由（不插耳机时走内置扬声器），即现在的 `speaker` 变体；`wired` 变体
+  「不插耳机时内置扬声器静音」是新行为，仍需在硬件上重新验证。仅 Full-Speed。
 - 另有一个 **XInput（Xbox 360）** 固件变体计划在独立仓库实现；本仓库保持 DS4 形态。
 
 ## 许可证

@@ -21,6 +21,9 @@ rem    AUDIO=0         diagnostic opt-out: build without UAC1 audio.
 rem                    Audio is on by default (the default build is the
 rem                    release candidate and a wired DS4 has audio).
 rem    GAMEPAD=0       build without the HID gamepad.
+rem    SPEAKER=1       custom audio routing: with no headset, downmix L+R to
+rem                    the controller's built-in speaker (default: silent, like
+rem                    a wired DS4). Requires audio (not with AUDIO=0).
 rem    DEBUG_CONSOLE=1 build with the UART/0xB4 log mirror (-dbg).
 rem                    Empty or 0 = off (release). Same rule as CMake.
 rem    MIC_DIAG=1      build with mic diagnostics (-diag).
@@ -31,6 +34,7 @@ rem    default            ds4dongle-<board>.bin        (audio + gamepad)
 rem    DEBUG_CONSOLE=1    ds4dongle-<board>-dbg.bin
 rem    MIC_DIAG=1         ds4dongle-<board>-diag.bin
 rem    AUDIO=0            ds4dongle-<board>-noaudio.bin
+rem    SPEAKER=1          ds4dongle-<board>-spk.bin
 rem    GAMEPAD=0          ds4dongle-<board>-nogp.bin
 rem    both               ds4dongle-<board>-noaudio-nogp.bin
 rem ============================================================
@@ -94,6 +98,7 @@ goto :done
     set "FEATURE_TAG="
     set "DS4_DEBUG_ON=0"
     if "%AUDIO%"=="0" set "FEATURE_TAG=!FEATURE_TAG!-noaudio"
+    if "%SPEAKER%"=="1" set "FEATURE_TAG=!FEATURE_TAG!-spk"
     if not "%DEBUG_CONSOLE%"=="" if not "%DEBUG_CONSOLE%"=="0" (
         set "DS4_DEBUG_ON=1"
         set "FEATURE_TAG=!FEATURE_TAG!-dbg"

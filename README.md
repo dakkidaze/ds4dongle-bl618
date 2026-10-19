@@ -26,6 +26,21 @@ build (verified locally), but the `aim61` and `m0sdock` USB wiring, LED behaviou
 have **not** been verified on real hardware. Use them at your own risk and report results if you
 test them. LED pins and USB topology are selected at compile time in `board_config.h`.
 
+## Controller compatibility
+
+The dongle always presents a wired DS4 v2 (`054C:09CC`) to the host; the controller revision only
+affects the Bluetooth side.
+
+| Controller | Status | Notes |
+|---|---|---|
+| **DualShock 4 v2 (CUH-ZCT2)** | **Hardware-validated** | The reference controller for this firmware. |
+| **DualShock 4 v1 (CUH-ZCT1)** | Protocol-compatible in theory, **not hardware-tested** | Same Bluetooth HID report family (`0x11` state, `0x12–0x19` mic audio, `0x17` speaker audio). Basic input, rumble and lightbar are expected to work. Mic audio and motion calibration need real-hardware confirmation. |
+| **Third-party / clone "DS4" controllers** | **Not guaranteed** | Many clones use different report IDs, payload lengths, feature reports or audio formats. Basic HID input may work, but microphone, audio and calibration may not. |
+
+A diagnostic `PROBE=1` build is planned to capture the controller's HID SDP record/report
+descriptor, input report IDs and lengths, feature reports and audio report presence without changing
+the controller. If you have a v1 or a clone, please open an issue with the model and the probe log.
+
 ## Features
 
 - **DS4 v2 USB persona**: byte-identical 507-byte HID report descriptor, UAC1 audio function,
@@ -55,10 +70,21 @@ cd ds4dongle-bl618
 
 The first build downloads the official Xuantie RISC-V toolchain (~95 MB, SHA-256 verified) into
 `third_party/toolchain/` (git-ignored), because the SDK needs the T-Head `-march` extensions.
-Output: `firmware/lctech616/ds4dongle-lctech616.bin` (audio + gamepad).
+Output: `firmware/lctech616/ds4dongle-lctech616.bin` — the default `wired` variant (audio + gamepad).
 
 See [BUILD.md](BUILD.md) for Windows (WSL2 or native MSYS2), offline toolchain setup, build
 options, flashing and troubleshooting.
+
+## Release variants
+
+| Variant | Build | Audio behaviour |
+|---|---|---|
+| `ds4dongle-bl618-wired` | `./build.sh` (default) | Matches a wired DS4: USB audio goes to the headset jack only; the built-in speaker is silent with no headset. |
+| `ds4dongle-bl618-gamepadonly` | `AUDIO=0 ./build.sh` | No UAC1 audio function; gamepad only. |
+| `ds4dongle-bl618-speaker` | `SPEAKER=1 ./build.sh` | With no headset, the stereo stream is downmixed L+R to the built-in speaker; a plugged headset still gets stereo. |
+
+`./release.sh` builds all three and writes the bins, boot2/partition and per-variant
+`flash_prog_cfg-*.ini` into `release/` (git-ignored).
 
 ## Flashing
 
@@ -103,10 +129,13 @@ SDK_CHANGES.md             what changed in the SDK and why
 
 ## Status
 
-- Software: P0 audio-session remediation completed and reviewed; release candidate built from the
-  default configuration.
-- Hardware: accepted on LCTech BL616 for enumeration, HID, speaker, microphone, duplex, pause/resume,
-  replug and Bluetooth reconnect. Full-Speed only.
+- Software: P0 audio-session remediation completed and reviewed; all three release variants
+  (`wired`, `gamepadonly`, `speaker`) are build-verified and `./release.sh` produces the flash
+  bundle.
+- Hardware: accepted on LCTech BL616 for enumeration, HID, speaker, microphone, duplex,
+  pause/resume, replug and Bluetooth reconnect. That acceptance used the previous default routing
+  (built-in speaker when no headset), which is now the `speaker` variant. The `wired` variant's
+  no-headset-silent behaviour is new and still needs hardware re-validation. Full-Speed only.
 - A separate **XInput (Xbox 360)** firmware variant is planned in another repository; this one keeps
   the DS4 persona.
 

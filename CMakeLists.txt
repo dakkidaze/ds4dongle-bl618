@@ -41,6 +41,12 @@ target_sources(app PRIVATE
 #                audio + gamepad. Set AUDIO=0 to omit the UAC1 audio function;
 #                that is a diagnostic opt-out, not a release variant.
 #                Only the literal value 0 disables it (unset = enabled).
+#   SPEAKER=1  : custom routing. With no headset, the stereo USB audio stream
+#                is downmixed L+R to the controller's built-in mono speaker;
+#                a plugged headset still gets stereo. Off by default: the
+#                default (wired) build keeps the built-in speaker silent when
+#                no headset is plugged, like a real wired DS4.
+#                Requires audio (AUDIO=0 + SPEAKER=1 is rejected).
 #   TOUCHPAD=1 : reserve a build that maps the touchpad to a HID mouse
 #                (flag only — no behaviour implemented yet)
 #   GYRO=1     : reserve a build that maps gyro to a HID device
@@ -60,6 +66,14 @@ if(NOT "$ENV{AUDIO}" STREQUAL "0")
     message(STATUS "               set AUDIO=0 only to opt out for diagnostics")
 else()
     message(STATUS "Feature AUDIO: disabled (AUDIO=0 diagnostic opt-out)")
+endif()
+if("$ENV{SPEAKER}" STREQUAL "1")
+    if("$ENV{AUDIO}" STREQUAL "0")
+        message(FATAL_ERROR "SPEAKER=1 requires audio; AUDIO=0 disables the audio path.")
+    endif()
+    add_compile_definitions(DS4_BUILTIN_SPEAKER=1)
+    target_compile_definitions(app PRIVATE DS4_BUILTIN_SPEAKER=1)
+    message(STATUS "Feature SPEAKER: built-in speaker without a headset (custom)")
 endif()
 if(DEFINED ENV{TOUCHPAD})
     add_compile_definitions(DS4_FEATURE_TOUCHPAD=1)

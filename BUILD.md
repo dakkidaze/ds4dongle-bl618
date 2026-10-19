@@ -66,7 +66,9 @@ On the first run it:
 Output:
 
 ```
-firmware/lctech616/ds4dongle-lctech616.bin          # release (audio + gamepad)
+firmware/lctech616/ds4dongle-lctech616.bin          # wired (default): audio + gamepad
+firmware/lctech616/ds4dongle-lctech616-spk.bin      # speaker (SPEAKER=1)
+firmware/lctech616/ds4dongle-lctech616-noaudio.bin  # gamepad only (AUDIO=0)
 firmware/lctech616/flash_prog_cfg.ini               # flash configuration
 firmware/lctech616/boot2_*.bin, partition.bin       # flash package
 ```
@@ -93,8 +95,9 @@ SKIP_TOOLCHAIN_SETUP=1 ./build.sh   # disable the automatic download
 ### 1.5 Build options
 
 ```bash
-./build.sh                    # default: LCTech BL616, audio + gamepad
-AUDIO=0 ./build.sh            # diagnostic: no audio
+./build.sh                    # default: LCTech BL616, wired (audio + gamepad)
+SPEAKER=1 ./build.sh          # custom: built-in speaker when no headset (-spk)
+AUDIO=0 ./build.sh            # diagnostic: no audio (-noaudio)
 GAMEPAD=0 ./build.sh          # diagnostic: no gamepad
 DEBUG_CONSOLE=1 ./build.sh    # UART logging + HID 0xB4 log readout
 MIC_DIAG=1 ./build.sh         # mic diagnostics (changes audio timing)
@@ -102,13 +105,19 @@ BOARD_TYPE=aim61 ./build.sh   # Ai-M61-32S-Kit (build-verified, hardware unteste
 BOARD_TYPE=m0sdock ./build.sh # Sipeed M0S Dock (build-verified, hardware untested)
 ```
 
-> Only **LCTech BL616** has been hardware-validated in this fork. All three configurations build,
-> but the `aim61` / `m0sdock` USB wiring, LED behaviour and audio timing have not been verified
-> on real hardware.
+> `wired` is the default and matches a wired DS4: USB audio only reaches the headset jack, and the
+> built-in speaker stays silent when no headset is plugged. `SPEAKER=1` opts into the custom routing
+> that feeds the built-in speaker (L+R downmix) when no headset is present; it requires audio and is
+> rejected together with `AUDIO=0`.
+
+> Only **LCTech BL616** has been hardware-validated in this fork. All three boards build, but the
+> `aim61` / `m0sdock` USB wiring, LED behaviour and audio timing have not been verified on real
+> hardware.
 
 Other actions:
 
 ```bash
+./release.sh          # build all three variants into release/ (bins + flash configs)
 ./build.sh clean      # remove build output
 ./build.sh rebuild    # clean + build
 ./build.sh strip      # drop intermediates, keep the firmware

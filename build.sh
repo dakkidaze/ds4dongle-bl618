@@ -23,6 +23,7 @@ fi
 #   音频       — 默认启用（默认构建即发布候选，真实有线 DS4 带音频）。
 #                AUDIO=0 仅用于诊断排障时关闭 UAC1 音频。
 #   GAMEPAD=0  — 去掉手柄 HID 功能（默认包含，无需声明）
+#   SPEAKER=1  — 不插耳机时把 USB 音频送到手柄内置扬声器（默认关闭；默认行为与有线 DS4 一致，无耳机时内置扬声器不发声）
 #   TOUCHPAD=1 — 预留：触摸板→鼠标（暂无功能）
 #   GYRO=1     — 预留：陀螺仪映射（暂无功能）
 #   DEBUG_CONSOLE=1 / MIC_DIAG=1 — 开发变体，产物加 -dbg / -diag 后缀，
@@ -36,6 +37,10 @@ DEBUG_CONSOLE_ON=0
 if [[ "${AUDIO:-}" == "0" ]]; then
     FEATURE_TAG="${FEATURE_TAG}-noaudio"
     FEATURE_DESC="no audio (AUDIO=0 diagnostic)"
+fi
+if [[ "${SPEAKER:-}" == "1" ]]; then
+    FEATURE_TAG="${FEATURE_TAG}-spk"
+    FEATURE_DESC="${FEATURE_DESC} + built-in speaker"
 fi
 if [[ -n "${DEBUG_CONSOLE:-}" && "${DEBUG_CONSOLE}" != "0" ]]; then
     DEBUG_CONSOLE_ON=1

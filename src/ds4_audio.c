@@ -388,8 +388,23 @@ void ds4_audio_task(void *arg)
              * stereo SBC stream. Taking the snapshot here (and reusing it for
              * the 0x17 target byte below) means a jack hot-plug mid-block can
              * never produce a block whose audio was processed for one route
-             * and transmitted to the other. */
-            bool to_speaker = !ds4_audio_headset_plugged();
+             * and transmitted to the other.
+             *
+             * Default (wired) behaviour: a real wired DS4 only plays USB audio
+             * through the headset jack. With no headset there is no output, so
+             * the block is consumed from the USB ring (host pacing continues)
+             * but not encoded or sent; the built-in speaker stays silent.
+             * DS4_BUILTIN_SPEAKER (SPEAKER=1) opts into the custom behaviour
+             * that also feeds the built-in mono speaker when no headset is
+             * plugged. */
+            bool headset = ds4_audio_headset_plugged();
+            bool to_speaker = false;
+#ifdef DS4_BUILTIN_SPEAKER
+            to_speaker = !headset;
+#endif
+            if (!headset && !to_speaker) {
+                continue;
+            }
 
             if (to_speaker) {
                 /* Mono speaker needs L+R: encoding the stereo block as-is
